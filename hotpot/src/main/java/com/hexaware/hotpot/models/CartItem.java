@@ -1,7 +1,7 @@
 package com.hexaware.hotpot.models;
 
 import jakarta.persistence.*;
-import java.util.Objects;
+
 
 @Entity
 @Table(name = "CartItems",
