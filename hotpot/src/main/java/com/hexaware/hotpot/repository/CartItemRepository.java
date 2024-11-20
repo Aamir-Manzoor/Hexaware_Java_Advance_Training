@@ -1,11 +1,12 @@
 package com.hexaware.hotpot.repository;
 
-import com.hexaware.hotpot.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.hexaware.hotpot.models.CartItem;
+
 
 @Repository
-public interface CartItemRepository extends JpaRepository<User, Long> {
+public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     
 }
