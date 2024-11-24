@@ -1,5 +1,7 @@
 package com.hexaware.hotpot.service.impl;
 
+import com.hexaware.hotpot.exception.BadRequestException;
+import com.hexaware.hotpot.exception.ResourceNotFoundException;
 import com.hexaware.hotpot.models.MenuItem;
 import com.hexaware.hotpot.repository.MenuItemRepository;
 import com.hexaware.hotpot.service.IMenuItemService;
@@ -16,39 +18,60 @@ public class MenuItemServiceImpl implements IMenuItemService {
     
     @Override
     public MenuItem createMenuItem(MenuItem menuItem) {
+    	if (menuItem.getRestaurant() == null || menuItem.getCategory() == null) {
+            throw new BadRequestException("MenuItem must have a valid Restaurant and Category.");
+        }
         return menuItemRepository.save(menuItem);
     }
+
     
     @Override
     public Optional<MenuItem> getMenuItemById(Long id) {
-        return menuItemRepository.findById(id);
+    	return Optional.of(menuItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id)));
     }
     
     @Override
     public List<MenuItem> getMenuItemsByRestaurant(Long restaurantId) {
-        return menuItemRepository.findByRestaurantRestaurantIdAndIsAvailableTrue(restaurantId);
+    	List<MenuItem> menuItems = menuItemRepository.findByRestaurantRestaurantIdAndIsAvailableTrue(restaurantId);
+        if (menuItems.isEmpty()) {
+            throw new ResourceNotFoundException("No available MenuItems found for Restaurant ID: " + restaurantId);
+        }
+        return menuItems;
     }
     
     @Override
     public List<MenuItem> getMenuItemsByCategory(Long restaurantId, String category) {
-        return menuItemRepository.findByRestaurantRestaurantIdAndCategory(restaurantId, category);
+    	List<MenuItem> menuItems = menuItemRepository.findByRestaurantRestaurantIdAndCategory(restaurantId, category);
+        if (menuItems.isEmpty()) {
+            throw new ResourceNotFoundException(
+                    "No MenuItems found for Restaurant ID: " + restaurantId + " in Category: " + category);
+        }
+        return menuItems;
     }
     
     @Override
     public MenuItem updateMenuItem(MenuItem menuItem) {
+    	if (menuItem.getMenuItemId() == null || !menuItemRepository.existsById(menuItem.getMenuItemId())) {
+            throw new ResourceNotFoundException("Cannot update. MenuItem not found with id: " + menuItem.getMenuItemId());
+        }
         return menuItemRepository.save(menuItem);
     }
     
     @Override
     public void toggleAvailability(Long id) {
-        menuItemRepository.findById(id).ifPresent(menuItem -> {
-            menuItem.setIsAvailable(!menuItem.getIsAvailable());
-            menuItemRepository.save(menuItem);
-        });
+    	MenuItem menuItem = menuItemRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("MenuItem not found with id: " + id));
+        menuItem.setIsAvailable(!menuItem.getIsAvailable());
+        menuItemRepository.save(menuItem);
     }
     
     @Override
     public List<MenuItem> getAvailableItems(Long restaurantId) {
-        return menuItemRepository.findByRestaurantRestaurantIdAndIsAvailableTrue(restaurantId);
+    	List<MenuItem> availableItems = menuItemRepository.findByRestaurantRestaurantIdAndIsAvailableTrue(restaurantId);
+        if (availableItems.isEmpty()) {
+            throw new ResourceNotFoundException("No available MenuItems found for Restaurant ID: " + restaurantId);
+        }
+        return availableItems;
     }
 }

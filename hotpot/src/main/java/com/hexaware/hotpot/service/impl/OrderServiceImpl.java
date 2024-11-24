@@ -1,5 +1,7 @@
 package com.hexaware.hotpot.service.impl;
 
+import com.hexaware.hotpot.exception.BadRequestException;
+import com.hexaware.hotpot.exception.ResourceNotFoundException;
 import com.hexaware.hotpot.models.Order;
 import com.hexaware.hotpot.models.Order.PaymentStatus;
 import com.hexaware.hotpot.repository.OrderRepository;
@@ -17,55 +19,80 @@ public class OrderServiceImpl implements IOrderService {
     
     @Override
     public Order createOrder(Order order) {
+    	if (order == null || order.getUser() == null || order.getRestaurant() == null) {
+            throw new BadRequestException("Order, User, and Restaurant details must be provided.");
+        }
         return orderRepository.save(order);
     }
     
     @Override
     public Optional<Order> getOrderById(Long id) {
-        return orderRepository.findById(id);
+    	return Optional.of(orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id)));
     }
     
     @Override
     public List<Order> getOrdersByUser(Long userId) {
-        return orderRepository.findByUserUserId(userId);
+    	 List<Order> orders = orderRepository.findByUserUserId(userId);
+         if (orders.isEmpty()) {
+             throw new ResourceNotFoundException("No orders found for user with id: " + userId);
+         }
+         return orders;
     }
     
     @Override
     public List<Order> getOrdersByRestaurant(Long restaurantId) {
-        return orderRepository.findByRestaurantRestaurantId(restaurantId);
+    	List<Order> orders = orderRepository.findByRestaurantRestaurantId(restaurantId);
+        if (orders.isEmpty()) {
+            throw new ResourceNotFoundException("No orders found for restaurant with id: " + restaurantId);
+        }
+        return orders;
     }
     
     @Override
     public Order updateOrderStatus(Long id, Order.OrderStatus status) {
-        Optional<Order> orderOpt = orderRepository.findById(id);
-        if (orderOpt.isPresent()) {
-            Order order = orderOpt.get();
-            order.setOrderStatus(status);
-            return orderRepository.save(order);
+        if (status == null) {
+            throw new BadRequestException("Order status must be provided.");
         }
-        return null;
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
+        order.setOrderStatus(status);
+        return orderRepository.save(order);
     }
     
     @Override
     public Order updatePaymentStatus(Long id, Order.PaymentStatus status) {
-        Optional<Order> orderOpt = orderRepository.findById(id);
-        if (orderOpt.isPresent()) {
-            Order order = orderOpt.get();
-            order.setPaymentStatus(status);
-            return orderRepository.save(order);
+    	if (status == null) {
+            throw new BadRequestException("Payment status must be provided.");
         }
-        return null;
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
+        order.setPaymentStatus(status);
+        return orderRepository.save(order);
     }
     
     @Override
     public List<Order> getOrdersByStatus(Order.OrderStatus status) {
-        return orderRepository.findByOrderStatus(status);
+    	if (status == null) {
+            throw new BadRequestException("Order status must be provided.");
+        }
+        List<Order> orders = orderRepository.findByOrderStatus(status);
+        if (orders.isEmpty()) {
+            throw new ResourceNotFoundException("No orders found with status: " + status);
+        }
+        return orders;
     }
 
 	@Override
 	public List<Order> getOrdersByPaymentStatus(PaymentStatus status) {
-		// TODO Auto-generated method stub
-		return null;
+		if (status == null) {
+            throw new BadRequestException("Payment status must be provided.");
+        }
+        List<Order> orders = orderRepository.findByPaymentStatus(status);
+        if (orders.isEmpty()) {
+            throw new ResourceNotFoundException("No orders found with payment status: " + status);
+        }
+        return orders;
 	}
     
 }

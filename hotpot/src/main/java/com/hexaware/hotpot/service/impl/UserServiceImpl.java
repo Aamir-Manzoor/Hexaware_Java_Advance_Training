@@ -1,5 +1,7 @@
 package com.hexaware.hotpot.service.impl;
 
+import com.hexaware.hotpot.exception.InvalidCredentialsException;
+import com.hexaware.hotpot.exception.ResourceNotFoundException;
 import com.hexaware.hotpot.models.User;
 import com.hexaware.hotpot.repository.UserRepository;
 import com.hexaware.hotpot.service.IUserService;
@@ -26,7 +28,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User createUser(User user) {
         if (existsByUsername(user.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new InvalidCredentialsException("Username already exists");
         }
         user.setCreatedAt(LocalDateTime.now());
         user.setIsActive(true);
@@ -36,19 +38,21 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User updateUser(User user) {
         if (!userRepository.existsById(user.getUserId())) {
-            throw new RuntimeException("User not found");
+            throw new ResourceNotFoundException("User not found");
         }
         return userRepository.save(user);
     }
 
     @Override
     public Optional<User> getUserById(Long userId) {
-        return userRepository.findById(userId);
+    	return Optional.of(userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId)));
     }
 
     @Override
     public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    	return Optional.of(userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username)));
     }
 
     @Override
@@ -70,7 +74,7 @@ public class UserServiceImpl implements IUserService {
             userRepository.save(existingUser);
             return true;
         }
-        return false;
+        throw new ResourceNotFoundException("User not found with ID: " + userId);
     }
 
     @Override
@@ -82,7 +86,7 @@ public class UserServiceImpl implements IUserService {
             userRepository.save(existingUser);
             return true;
         }
-        return false;
+        throw new ResourceNotFoundException("User not found with ID: " + userId);
     }
 
     @Override
@@ -92,9 +96,9 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void deleteUser(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new RuntimeException("User not found");
-        }
-        userRepository.deleteById(userId);
+    	  if (!userRepository.existsById(userId)) {
+              throw new ResourceNotFoundException("User not found with ID: " + userId);
+          }
+          userRepository.deleteById(userId);
     }
 }

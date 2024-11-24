@@ -39,6 +39,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<?> handleGenericException(Exception ex) {
 		return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "An unexpected error occurred");
 	}
+	
 
 	private ResponseEntity<?> buildErrorResponse(HttpStatus status, String message) {
 		Map<String, Object> errorResponse = new HashMap<>();

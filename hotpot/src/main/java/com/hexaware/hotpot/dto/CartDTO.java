@@ -23,7 +23,6 @@ public class CartDTO {
 
 	public CartDTO() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public CartDTO(Long cartId, Restaurant restaurant, List<CartItem> cartItems) {
