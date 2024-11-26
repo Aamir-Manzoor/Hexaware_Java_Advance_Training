@@ -18,9 +18,9 @@ public class OrderItemServiceImpl implements IOrderItemService {
     
     @Override
     public OrderItem createOrderItem(OrderItem orderItem) {
-    	if (orderItem.getOrder() == null || orderItem.getMenuItem() == null) {
-            throw new BadRequestException("OrderItem must have an associated Order and MenuItem.");
-        }
+//    	if (orderItem.getOrder() == null || orderItem.getMenuItem() == null) {
+//            throw new BadRequestException("OrderItem must have an associated Order and MenuItem.");
+//        }
         return orderItemRepository.save(orderItem);
     }
     
@@ -58,13 +58,13 @@ public class OrderItemServiceImpl implements IOrderItemService {
     
     @Override
     public List<OrderItem> createOrderItems(List<OrderItem> orderItems) {
-    	if (orderItems == null || orderItems.isEmpty()) {
-            throw new BadRequestException("OrderItems list cannot be null or empty.");
-        }
+//    	if (orderItems == null || orderItems.isEmpty()) {
+//            throw new BadRequestException("OrderItems list cannot be null or empty.");
+//        }
         orderItems.forEach(item -> {
-            if (item.getOrder() == null || item.getMenuItem() == null) {
-                throw new BadRequestException("Each OrderItem must have an associated Order and MenuItem.");
-            }
+//            if (item.getOrder() == null || item.getMenuItem() == null) {
+//                throw new BadRequestException("Each OrderItem must have an associated Order and MenuItem.");
+//            }
         });
         return orderItemRepository.saveAll(orderItems);
     }

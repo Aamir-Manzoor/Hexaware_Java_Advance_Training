@@ -18,9 +18,9 @@ public class RestaurantServiceImpl implements IRestaurantService {
     
     @Override
     public Restaurant createRestaurant(Restaurant restaurant) {
-    	if (restaurant == null || restaurant.getName() == null || restaurant.getCity() == null) {
-            throw new BadRequestException("Restaurant name and city must be provided.");
-        }
+//    	if (restaurant == null || restaurant.getName() == null || restaurant.getCity() == null) {
+//            throw new BadRequestException("Restaurant name and city must be provided.");
+//        }
         return restaurantRepository.save(restaurant);
     }
     
@@ -42,9 +42,9 @@ public class RestaurantServiceImpl implements IRestaurantService {
     
     @Override
     public List<Restaurant> getRestaurantsByCity(String city) {
-    	if (city == null || city.isEmpty()) {
-            throw new BadRequestException("City name must be provided.");
-        }
+//    	if (city == null || city.isEmpty()) {
+//            throw new BadRequestException("City name must be provided.");
+//        }
         List<Restaurant> restaurants = restaurantRepository.findByCity(city);
         if (restaurants.isEmpty()) {
             throw new ResourceNotFoundException("No restaurants found in city: " + city);
@@ -54,9 +54,9 @@ public class RestaurantServiceImpl implements IRestaurantService {
     
     @Override
     public Restaurant updateRestaurant(Restaurant restaurant) {
-    	if (restaurant == null || restaurant.getRestaurantId() == null) {
-            throw new BadRequestException("Restaurant ID and details must be provided.");
-        }
+//    	if (restaurant == null || restaurant.getRestaurantId() == null) {
+//            throw new BadRequestException("Restaurant ID and details must be provided.");
+//        }
         if (!restaurantRepository.existsById(restaurant.getRestaurantId())) {
             throw new ResourceNotFoundException("Restaurant not found with id: " + restaurant.getRestaurantId());
         }

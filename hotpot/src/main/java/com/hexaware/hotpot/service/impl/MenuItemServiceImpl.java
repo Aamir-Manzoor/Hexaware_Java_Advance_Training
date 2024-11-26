@@ -18,9 +18,9 @@ public class MenuItemServiceImpl implements IMenuItemService {
     
     @Override
     public MenuItem createMenuItem(MenuItem menuItem) {
-    	if (menuItem.getRestaurant() == null || menuItem.getCategory() == null) {
-            throw new BadRequestException("MenuItem must have a valid Restaurant and Category.");
-        }
+//    	if (menuItem.getRestaurant() == null || menuItem.getCategory() == null) {
+//            throw new BadRequestException("MenuItem must have a valid Restaurant and Category.");
+//        }
         return menuItemRepository.save(menuItem);
     }
 

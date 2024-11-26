@@ -19,9 +19,9 @@ public class OrderServiceImpl implements IOrderService {
     
     @Override
     public Order createOrder(Order order) {
-    	if (order == null || order.getUser() == null || order.getRestaurant() == null) {
-            throw new BadRequestException("Order, User, and Restaurant details must be provided.");
-        }
+//    	if (order == null || order.getUser() == null || order.getRestaurant() == null) {
+//            throw new BadRequestException("Order, User, and Restaurant details must be provided.");
+//        }
         return orderRepository.save(order);
     }
     
@@ -51,9 +51,9 @@ public class OrderServiceImpl implements IOrderService {
     
     @Override
     public Order updateOrderStatus(Long id, Order.OrderStatus status) {
-        if (status == null) {
-            throw new BadRequestException("Order status must be provided.");
-        }
+//        if (status == null) {
+//            throw new BadRequestException("Order status must be provided.");
+//        }
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
         order.setOrderStatus(status);
@@ -62,9 +62,9 @@ public class OrderServiceImpl implements IOrderService {
     
     @Override
     public Order updatePaymentStatus(Long id, Order.PaymentStatus status) {
-    	if (status == null) {
-            throw new BadRequestException("Payment status must be provided.");
-        }
+//    	if (status == null) {
+//            throw new BadRequestException("Payment status must be provided.");
+//        }
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + id));
         order.setPaymentStatus(status);
@@ -73,9 +73,9 @@ public class OrderServiceImpl implements IOrderService {
     
     @Override
     public List<Order> getOrdersByStatus(Order.OrderStatus status) {
-    	if (status == null) {
-            throw new BadRequestException("Order status must be provided.");
-        }
+//    	if (status == null) {
+//            throw new BadRequestException("Order status must be provided.");
+//        }
         List<Order> orders = orderRepository.findByOrderStatus(status);
         if (orders.isEmpty()) {
             throw new ResourceNotFoundException("No orders found with status: " + status);
@@ -85,9 +85,9 @@ public class OrderServiceImpl implements IOrderService {
 
 	@Override
 	public List<Order> getOrdersByPaymentStatus(PaymentStatus status) {
-		if (status == null) {
-            throw new BadRequestException("Payment status must be provided.");
-        }
+//		if (status == null) {
+//            throw new BadRequestException("Payment status must be provided.");
+//        }
         List<Order> orders = orderRepository.findByPaymentStatus(status);
         if (orders.isEmpty()) {
             throw new ResourceNotFoundException("No orders found with payment status: " + status);

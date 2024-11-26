@@ -9,25 +9,17 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class RestaurantDTO {
-	@NotNull(message = "Resturant ID cannot be null")
-	@Positive(message = "Resturant ID must be a positive number")
+
 	private Long restaurantId;
 
-	@NotBlank(message = "Restaurant name cannot be blank")
-	@Size(max = 100, message = "Restaurant name cannot exceed 100 characters")
 	private String name;
 
-	@Pattern(regexp = "\\d{10}", message = "Phone number must be exactly 10 digits")
 	private String phoneNumber;
 
-	@NotBlank(message = "City cannot be blank")
-	@Size(max = 50, message = "City name cannot exceed 50 characters")
 	private String city;
 
-	@NotNull(message = "Creation time cannot be null")
 	private LocalDateTime createdAt;
 
-	@NotNull(message = "Active status cannot be null")
 	private Boolean isActive;
 
 	// Constructor

@@ -1,24 +1,21 @@
 package com.hexaware.hotpot.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-public class UserDTO {
+public class LoginDTO {
 	private String username;
-	private String role;
+	private String password;
 
-	public UserDTO() {
+	public LoginDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserDTO(String username, String email, String role) {
+	public LoginDTO(String username, String password) {
 		super();
 		this.username = username;
-
-		this.role = role;
+		this.password = password;
 	}
 
 	public String getUsername() {
@@ -29,20 +26,17 @@ public class UserDTO {
 		this.username = username;
 	}
 
-
-
-
-
-	public String getRole() {
-		return role;
+	public String getPassword() {
+		return password;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 	@Override
 	public String toString() {
-		return "UserDtoNew [username=" + username + ", role=" + role + "]";
+		return "LoginDTO [username=" + username + ", password=" + password + "]";
 	}
+
 }

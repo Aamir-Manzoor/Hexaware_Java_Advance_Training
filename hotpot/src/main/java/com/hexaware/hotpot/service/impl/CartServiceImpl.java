@@ -18,9 +18,9 @@ public class CartServiceImpl implements ICartService {
     
     @Override
     public Cart createCart(Cart cart) {
-    	if (cart.getUser() == null || cart.getRestaurant() == null) {
-            throw new BadRequestException("Cart must have associated User and Restaurant.");
-        }
+//    	if (cart.getUser() == null || cart.getRestaurant() == null) {
+//            throw new BadRequestException("Cart must have associated User and Restaurant.");
+//        }
         return cartRepository.save(cart);
     }
     
@@ -66,9 +66,9 @@ public class CartServiceImpl implements ICartService {
     public void clearCart(Long id) {
     	Cart cart = cartRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cannot clear. Cart not found with id: " + id));
-        if (cart.getCartItems().isEmpty()) {
-            throw new BadRequestException("Cart is already empty.");
-        }
+//        if (cart.getCartItems().isEmpty()) {
+//            throw new BadRequestException("Cart is already empty.");
+//        }
         cart.getCartItems().clear();
         cartRepository.save(cart);
     }
