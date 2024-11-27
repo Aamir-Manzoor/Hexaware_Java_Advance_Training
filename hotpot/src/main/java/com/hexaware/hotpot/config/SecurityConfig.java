@@ -48,6 +48,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/api/orders/**").permitAll() // Allow all requests to /api/orders/**
+                .requestMatchers("/api/menu-items/**").permitAll()
+                .requestMatchers("/api/carts**").permitAll()
                 .anyRequest().authenticated()
             )
             .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
