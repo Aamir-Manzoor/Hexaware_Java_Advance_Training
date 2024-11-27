@@ -19,40 +19,41 @@ import com.hexaware.hotpot.security.JwtAuthenticationFilter;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	private final JwtAuthenticationEntryPoint authenticationEntryPoint;
-	private final JwtAuthenticationFilter jwtAuthenticationFilter;
-	private final UserDetailsService userDetailsService;
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserDetailsService userDetailsService;
 
-	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-			throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
-	}
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-	public SecurityConfig(JwtAuthenticationEntryPoint authenticationEntryPoint,
-			JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsService userDetailsService) {
-		this.authenticationEntryPoint = authenticationEntryPoint;
-		this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-		this.userDetailsService = userDetailsService;
+    public SecurityConfig(JwtAuthenticationEntryPoint authenticationEntryPoint,
+            JwtAuthenticationFilter jwtAuthenticationFilter, UserDetailsService userDetailsService) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.userDetailsService = userDetailsService;
+    }
 
-	}
+    @Bean
+    public static PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public static PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-
-	@Bean
-	public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-	    httpSecurity
-	        .csrf().disable()
-	        .authorizeHttpRequests(auth -> auth
-	            .requestMatchers("/api/auth/**").permitAll() // Allow all requests to /api/auth/**
-	            .anyRequest().authenticated()
-	        )
-	        .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
-	        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-	    
-	    return httpSecurity.build();
-	}
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+        httpSecurity
+            .csrf().disable()
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/orders/**").permitAll() // Allow all requests to /api/orders/**
+                .anyRequest().authenticated()
+            )
+            .exceptionHandling(ex -> ex.authenticationEntryPoint(authenticationEntryPoint))
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        
+        return httpSecurity.build();
+    }
 }
+

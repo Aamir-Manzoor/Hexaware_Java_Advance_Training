@@ -1,130 +1,147 @@
 package com.hexaware.hotpot.models;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+//import com.hexaware.hotpot.models.OrderStatusDeserializer;
+//import com.hexaware.hotpot.models.PaymentStatusDeserializer;
 import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Objects;
 
 @Entity
-@Table(name = "Orders")
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     
     @ManyToOne
-    @JoinColumn(name = "UserID")
+    @JoinColumn(name = "userId")
     private User user;
     
     @ManyToOne
-    @JoinColumn(name = "RestaurantID")
+    @JoinColumn(name = "restaurantId")
     private Restaurant restaurant;
     
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String deliveryAddress;
     
-    @Column(nullable = false)
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private OrderStatus orderStatus = OrderStatus.Pending;
+    @Column(nullable = false, length = 20)
+    @JsonDeserialize(using = OrderStatusDeserializer.class)
+    private OrderStatus orderStatus = OrderStatus.PENDING;
     
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private PaymentStatus paymentStatus = PaymentStatus.Pending;
+    @Column(nullable = false, length = 20)
+    @JsonDeserialize(using = PaymentStatusDeserializer.class)
+    private PaymentStatus paymentStatus = PaymentStatus.PENDING;
     
-    @Column
+    @Column(nullable = false)
     private LocalDateTime createdAt;
     
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
     
     public enum OrderStatus {
-        Pending, Confirmed, Delivered, Cancelled
+        PENDING, CONFIRMED, DELIVERED, CANCELLED
     }
     
     public enum PaymentStatus {
-        Pending, Completed
+        PENDING, COMPLETED, UNPAID
     }
 
-    // Getters
+    // Constructors
+    public Order() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+   
+
+    @PrePersist
+    public void prePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = LocalDateTime.now();
+        }
+    }
+
     public Long getOrderId() {
-        return orderId;
-    }
+		return orderId;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
+	public User getUser() {
+		return user;
+	}
 
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
+	public void setUser(User user) {
+		this.user = user;
+	}
 
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
 
-    public OrderStatus getOrderStatus() {
-        return orderStatus;
-    }
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
 
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
+	public String getDeliveryAddress() {
+		return deliveryAddress;
+	}
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
+	}
 
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
-    }
+	public BigDecimal getTotalAmount() {
+		return totalAmount;
+	}
 
-    // Setters
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
+	public void setTotalAmount(BigDecimal totalAmount) {
+		this.totalAmount = totalAmount;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
+	}
 
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
+	public void setOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
+	}
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
+	public PaymentStatus getPaymentStatus() {
+		return paymentStatus;
+	}
 
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
+	public void setPaymentStatus(PaymentStatus paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
 
-    public void setOrderStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
-    }
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
 
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+	public List<OrderItem> getOrderItems() {
+		return orderItems;
+	}
 
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-    }
+	public void setOrderItems(List<OrderItem> orderItems) {
+		this.orderItems = orderItems;
+	}
 
-    @Override
+	@Override
     public String toString() {
         return "Order{" +
                 "orderId=" + orderId +
@@ -136,17 +153,16 @@ public class Order {
                 '}';
     }
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (o == null || getClass() != o.getClass()) return false;
-//        Order order = (Order) o;
-//        return Objects.equals(orderId, order.orderId);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(orderId);
-//    }
-}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Order order = (Order) o;
+        return Objects.equals(orderId, order.orderId);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(orderId);
+    }
+}

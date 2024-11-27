@@ -1,4 +1,3 @@
-
 package com.hexaware.hotpot.repository;
 
 import java.util.List;
@@ -10,20 +9,11 @@ import com.hexaware.hotpot.models.Order;
 import com.hexaware.hotpot.models.Order.OrderStatus;
 import com.hexaware.hotpot.models.Order.PaymentStatus;
 
-
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
-
-	List<Order> findByUserUserId(Long userId);
-
-	List<Order> findByRestaurantRestaurantId(Long restaurantId);
-
-
-
-	List<Order> findByOrderStatus(OrderStatus status);
-
-	List<Order> findByPaymentStatus(PaymentStatus status);
-	
-	
-
+    List<Order> findByUserUserId(Long userId);
+    List<Order> findByRestaurantRestaurantId(Long restaurantId);
+    List<Order> findByOrderStatus(OrderStatus status);
+    List<Order> findByPaymentStatus(PaymentStatus status);
 }
+
